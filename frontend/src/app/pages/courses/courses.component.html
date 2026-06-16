@@ -1,0 +1,153 @@
+<div class="animate-fade-in">
+  <div class="header-container">
+    <div>
+      <h2 class="header-title">Catálogo de Cursos</h2>
+      <p class="header-desc">Visualización e inserción en estructuras auto-balanceadas Árbol AVL y Árbol Binario de Búsqueda (BST).</p>
+    </div>
+    <div class="actions">
+      <button class="btn btn-secondary" (click)="toggleTreeMode()">
+        Modo Actual: <strong class="mode-highlight">{{treeMode | uppercase}}</strong> (Clic para alternar)
+      </button>
+    </div>
+  </div>
+
+  <div class="dashboard-grid">
+    <!-- Form and Tree Stats -->
+    <div class="left-panel">
+      <!-- Create Course -->
+      <div class="glass-panel">
+        <h3 class="panel-title">Agregar Nuevo Curso</h3>
+        <form (ngSubmit)="addCourse()" class="course-form">
+          <div class="form-group">
+            <label class="form-label">Código del Curso</label>
+            <input type="text" [(ngModel)]="courseForm.codigo" name="codigo" required class="form-control" placeholder="Ej: SI301">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nombre del Curso</label>
+            <input type="text" [(ngModel)]="courseForm.nombre" name="nombre" required class="form-control">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Créditos</label>
+            <input type="number" [(ngModel)]="courseForm.creditos" name="creditos" min="1" required class="form-control">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Código Catedrático Asignado</label>
+            <input type="text" [(ngModel)]="courseForm.catedraticoAsignado" name="catedraticoAsignado" class="form-control" placeholder="Ej: L001">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Horario</label>
+            <input type="text" [(ngModel)]="courseForm.horario" name="horario" class="form-control" placeholder="Ej: 07:00-09:00">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Cupo Máximo</label>
+            <input type="number" [(ngModel)]="courseForm.cupoMaximo" name="cupoMaximo" class="form-control">
+          </div>
+          <button type="submit" class="btn btn-primary w-full">Insertar en Árbol</button>
+        </form>
+      </div>
+
+      <!-- Tree Stats -->
+      <div class="glass-panel stats-panel">
+        <h3 class="panel-title">Estadísticas del Árbol ({{treeMode | uppercase}})</h3>
+        <div class="stats-box">
+          <div class="stat-item">
+            <span class="stat-label">Altura del Árbol:</span>
+            <span class="stat-value">{{treeHeight}}</span>
+          </div>
+          <div class="stat-item" *ngIf="treeMin">
+            <span class="stat-label">Curso Mínimo (Key):</span>
+            <span class="stat-value">{{treeMin.codigo}}</span>
+          </div>
+          <div class="stat-item" *ngIf="treeMax">
+            <span class="stat-label">Curso Máximo (Key):</span>
+            <span class="stat-value">{{treeMax.codigo}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tree SVG Render and List -->
+    <div class="right-panel">
+      <!-- Graphical Interactive Tree Render -->
+      <div class="glass-panel visualizer-panel">
+        <h3 class="panel-title">Estructura Jerárquica (Visualizador SVG)</h3>
+        <div class="svg-container">
+          <svg [attr.width]="svgWidth" [attr.height]="svgHeight" class="tree-svg">
+            <!-- Draw Links first to display below nodes -->
+            <line *ngFor="let link of svgLinks" 
+                  [attr.x1]="link.x1" [attr.y1]="link.y1" 
+                  [attr.x2]="link.x2" [attr.y2]="link.y2" 
+                  class="tree-link" />
+
+            <!-- Draw Nodes -->
+            <g *ngFor="let node of svgNodes" class="svg-node-group">
+              <!-- Node circle -->
+              <circle [attr.cx]="node.x" [attr.cy]="node.y" r="24" class="tree-node-circle" />
+              <!-- Node label (Course Code) -->
+              <text [attr.x]="node.x" [attr.y]="node.y + 5" class="tree-node-text">{{node.key}}</text>
+              
+              <!-- Hover Title Details -->
+              <title>{{node.key}}: {{node.nombre}}</title>
+              
+              <!-- AVL Balance factor tag -->
+              <g *ngIf="treeMode === 'avl' && node.balanceFactor !== undefined">
+                <rect [attr.x]="node.x + 12" [attr.y]="node.y - 25" width="22" height="16" rx="3" class="bf-bg"
+                      [class.unbalanced]="node.balanceFactor > 1 || node.balanceFactor < -1" />
+                <text [attr.x]="node.x + 23" [attr.y]="node.y - 13" class="bf-text">{{node.balanceFactor}}</text>
+              </g>
+            </g>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Course Traversals List -->
+      <div class="glass-panel">
+        <div class="list-header">
+          <h3 class="panel-title">Recorrido del Catálogo</h3>
+          <div class="traversal-select">
+            <label class="form-label">Ordenamiento:</label>
+            <select [(ngModel)]="selectedTraversal" (change)="onTraversalChange()" class="form-control inline-select">
+              <option value="inorder">InOrden (Ordenado Código)</option>
+              <option value="preorder">PreOrden (PreOrder)</option>
+              <option value="postorder">PostOrden (PostOrder)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Nombre</th>
+                <th>Créditos</th>
+                <th>Catedrático</th>
+                <th>Horario</th>
+                <th>Cupo</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let c of courses" class="animate-fade-in">
+                <td><strong>{{c.codigo}}</strong></td>
+                <td>{{c.nombre}}</td>
+                <td>{{c.creditos}}</td>
+                <td>{{c.catedraticoAsignado}}</td>
+                <td>{{c.horario}}</td>
+                <td>{{c.cupoMaximo}}</td>
+                <td>
+                  <button class="node-delete-btn-table" (click)="deleteCourse(c.codigo)">
+                    <span class="material-icons">delete</span>
+                  </button>
+                </td>
+              </tr>
+              <tr *ngIf="courses.length === 0">
+                <td colspan="7" class="text-center text-muted">No hay cursos registrados.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

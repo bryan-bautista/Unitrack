@@ -1,0 +1,236 @@
+<div class="animate-fade-in">
+  <div class="header-container">
+    <div>
+      <h2 class="header-title">Mapa de Prerrequisitos</h2>
+      <p class="header-desc">Modelo relacional de dependencias académicas en base a un Grafo Dirigido con análisis de ciclos y ordenamientos.</p>
+    </div>
+  </div>
+
+  <!-- Cycle warning banner -->
+  <div class="cycle-alert animate-fade-in" *ngIf="cycleInfo.hasCycle">
+    <span class="material-icons alert-icon">warning</span>
+    <div>
+      <strong>Atención: Dependencia Circular Detectada!</strong>
+      <p>{{cycleInfo.message}} No se podrán calcular ordenamientos topológicos hasta resolverlo.</p>
+    </div>
+  </div>
+
+  <div class="dashboard-grid">
+    <!-- Left Column: Operations & Algorithm controllers -->
+    <div class="left-panel">
+      <!-- Add Course Vertex -->
+      <div class="glass-panel">
+        <h3 class="panel-title">Agregar Curso al Pensum</h3>
+        <form (ngSubmit)="addCourse()" class="pensum-form">
+          <div class="form-row">
+            <div class="form-group flex-1">
+              <label class="form-label">Código</label>
+              <input type="text" [(ngModel)]="courseForm.codigo" name="codigo" required class="form-control" placeholder="Ej: CB101">
+            </div>
+            <div class="form-group flex-1">
+              <label class="form-label">Nombre</label>
+              <input type="text" [(ngModel)]="courseForm.nombre" name="nombre" required class="form-control">
+            </div>
+            <div class="form-group flex-1">
+              <label class="form-label">Créditos</label>
+              <input type="number" [(ngModel)]="courseForm.creditos" name="creditos" min="0" required class="form-control">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary w-full">Agregar Vértice</button>
+        </form>
+      </div>
+
+      <!-- Add Prerequisite Edge -->
+      <div class="glass-panel">
+        <h3 class="panel-title">Agregar Relación de Prerrequisito</h3>
+        <form (ngSubmit)="addRelation()" class="relation-form">
+          <div class="form-row">
+            <div class="form-group flex-1">
+              <label class="form-label">Curso Prerrequisito (Origen)</label>
+              <select [(ngModel)]="relationForm.fromCode" name="fromCode" class="form-control">
+                <option value="">Seleccione origen...</option>
+                <option *ngFor="let n of nodes" [value]="n.id">{{n.id}} - {{n.course.nombre}}</option>
+              </select>
+            </div>
+            <div class="form-group flex-1">
+              <label class="form-label">Curso Destino</label>
+              <select [(ngModel)]="relationForm.toCode" name="toCode" class="form-control">
+                <option value="">Seleccione destino...</option>
+                <option *ngFor="let n of nodes" [value]="n.id">{{n.id}} - {{n.course.nombre}}</option>
+              </select>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary w-full">Agregar Flecha (Relación)</button>
+        </form>
+      </div>
+
+      <!-- Algorithms and traversals -->
+      <div class="glass-panel alg-panel">
+        <h3 class="panel-title">Análisis del Grafo</h3>
+        <div class="alg-buttons-grid">
+          <button class="btn btn-secondary" (click)="getTopologicalSort()" [disabled]="cycleInfo.hasCycle">
+            <span class="material-icons">sort</span> Orden Topológico (Pensum Recomendado)
+          </button>
+          
+          <div class="alg-section">
+            <h4>Paso a Paso Interactivo</h4>
+            <div class="step-buttons">
+              <select #animStart class="form-control inline-select">
+                <option value="">Elegir nodo raíz...</option>
+                <option *ngFor="let n of nodes" [value]="n.id">{{n.id}}</option>
+              </select>
+              <button class="btn btn-secondary btn-sm" (click)="animateAlg('bfs', animStart.value)">BFS</button>
+              <button class="btn btn-secondary btn-sm" (click)="animateAlg('dfs', animStart.value)">DFS</button>
+            </div>
+          </div>
+
+          <div class="alg-section">
+            <h4>Camino de Prerrequisitos Más Corto</h4>
+            <div class="path-inputs">
+              <input type="text" [(ngModel)]="pathInput.from" placeholder="Origen (A)" class="form-control inline-select">
+              <input type="text" [(ngModel)]="pathInput.to" placeholder="Destino (B)" class="form-control inline-select">
+              <button class="btn btn-primary btn-sm" (click)="getShortestPath()">Buscar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Interactive diagram & listings -->
+    <div class="right-panel">
+      <!-- Interactive SVG graph canvas -->
+      <div class="glass-panel visualizer-panel">
+        <div class="visualizer-header">
+          <h3 class="panel-title">Lienzo Interactivo (SVG)</h3>
+          <button class="btn btn-secondary btn-sm" (click)="clearHighlights()">Limpiar Filtros</button>
+        </div>
+        <p class="svg-hint">Arrastra los nodos para reordenar el diagrama. Haz clic en un curso para ver prerrequisitos (azul) y desbloqueos (púrpura).</p>
+        
+        <div class="graph-svg-container">
+          <svg width="800" height="500" class="graph-svg">
+            <!-- Definitions for arrows -->
+            <defs>
+              <marker id="arrow" viewBox="0 0 10 10" refX="28" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="#718096" />
+              </marker>
+              <marker id="arrow-highlight" viewBox="0 0 10 10" refX="28" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="#00d2ff" />
+              </marker>
+            </defs>
+
+            <!-- Drawing lines/edges -->
+            <line *ngFor="let e of edges" 
+                  [attr.x1]="getNodeX(e.from)" 
+                  [attr.y1]="getNodeY(e.from)" 
+                  [attr.x2]="getNodeX(e.to)" 
+                  [attr.y2]="getNodeY(e.to)" 
+                  class="graph-edge"
+                  [class.highlighted]="e.isHighlighted"
+                  [attr.marker-end]="e.isHighlighted ? 'url(#arrow-highlight)' : 'url(#arrow)'" />
+
+
+            <!-- Drawing node vertices -->
+            <g *ngFor="let node of nodes" class="graph-node-group" 
+               [class.selected]="node.isSelected"
+               [class.prereq]="node.isPrereq"
+               [class.unlocked]="node.isUnlocked"
+               [class.visited]="node.isVisited"
+               (mousedown)="onNodeMouseDown($event, node)"
+               (click)="selectNode(node)">
+              
+              <circle [attr.cx]="node.x" [attr.cy]="node.y" r="22" class="graph-node-circle" />
+              <text [attr.x]="node.x" [attr.y]="node.y + 5" class="graph-node-text">{{node.id}}</text>
+              <title>{{node.course.nombre}} (Créditos: {{node.course.creditos}})</title>
+            </g>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Alg Result Display Panel -->
+      <div class="glass-panel alg-results" *ngIf="topoSortList || shortestPathList">
+        <h3 class="panel-title">Resultados de Análisis</h3>
+        
+        <!-- Topological Sort Results -->
+        <div *ngIf="topoSortList" class="result-section animate-fade-in">
+          <h4>Orden Recomendado de Cursos (Pensum):</h4>
+          <div class="path-chain">
+            <span *ngFor="let c of topoSortList; let last = last" class="path-item">
+              <span class="path-badge">{{c.codigo}}</span>: {{c.nombre}}
+              <span class="path-connector" *ngIf="!last"><span class="material-icons">arrow_forward</span></span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Shortest Path Results -->
+        <div *ngIf="shortestPathList" class="result-section animate-fade-in">
+          <h4>Camino de Prerrequisitos Más Corto:</h4>
+          <div class="path-chain">
+            <span *ngFor="let c of shortestPathList; let last = last" class="path-item">
+              <span class="path-badge color-blue">{{c.codigo}}</span>: {{c.nombre}}
+              <span class="path-connector" *ngIf="!last"><span class="material-icons">arrow_forward</span></span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Course list with relationships details -->
+      <div class="glass-panel">
+        <h3 class="panel-title">Relaciones del Grafo</h3>
+        <div class="relations-dashboard">
+          <div class="relations-table-box">
+            <h4>Cursos en el Grafo</h4>
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Curso</th>
+                  <th>Créditos</th>
+                  <th>Acción</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let n of nodes">
+                  <td><strong>{{n.id}}</strong></td>
+                  <td>{{n.course.nombre}}</td>
+                  <td>{{n.course.creditos}}</td>
+                  <td>
+                    <button class="node-delete-btn-table" (click)="deleteCourse(n.id); $event.stopPropagation()">
+                      <span class="material-icons">delete</span>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="relations-table-box">
+            <h4>Relaciones Prerrequisito</h4>
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Prerrequisito (Origen)</th>
+                  <th>Curso Requerido (Destino)</th>
+                  <th>Acción</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let e of edges">
+                  <td>{{e.from}}</td>
+                  <td><span class="material-icons arrow-table">arrow_forward</span> {{e.to}}</td>
+                  <td>
+                    <button class="node-delete-btn-table" (click)="deleteRelation(e.from, e.to)">
+                      <span class="material-icons">delete</span>
+                    </button>
+                  </td>
+                </tr>
+                <tr *ngIf="edges.length === 0">
+                  <td colspan="3" class="text-center text-muted">No hay dependencias registradas.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

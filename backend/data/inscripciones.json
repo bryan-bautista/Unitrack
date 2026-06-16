@@ -1,0 +1,38 @@
+{
+  "2023001": [
+    {
+      "curso": "CB101",
+      "semestre": 1,
+      "nota": 85
+    },
+    {
+      "curso": "CB102",
+      "semestre": 2,
+      "nota": 90
+    },
+    {
+      "curso": "SI301",
+      "semestre": 3,
+      "nota": 75
+    }
+  ],
+  "2023002": [
+    {
+      "curso": "CB101",
+      "semestre": 1,
+      "nota": 95
+    },
+    {
+      "curso": "CB102",
+      "semestre": 2,
+      "nota": 80
+    }
+  ],
+  "2023003": [
+    {
+      "curso": "CB101",
+      "semestre": 1,
+      "nota": 61
+    }
+  ]
+}

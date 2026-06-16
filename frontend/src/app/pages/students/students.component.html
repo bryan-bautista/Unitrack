@@ -1,0 +1,209 @@
+<div class="animate-fade-in">
+  <div class="header-container">
+    <div>
+      <h2 class="header-title">Módulo de Estudiantes</h2>
+      <p class="header-desc">Administración de registros académicos utilizando Listas Enlazadas Simples y Dobles.</p>
+    </div>
+    <div class="actions">
+      <button class="btn btn-secondary" (click)="invertList()">
+        <span class="material-icons">swap_horiz</span> Invertir Lista Simple
+      </button>
+    </div>
+  </div>
+
+  <div class="dashboard-grid">
+    <!-- Left Panel: Create & Search -->
+    <div class="left-panel">
+      <!-- Search -->
+      <div class="glass-panel search-panel">
+        <h3 class="panel-title">Buscar Estudiante</h3>
+        <div class="search-box">
+          <input type="text" [(ngModel)]="searchCarnet" placeholder="Ingrese Carnet..." class="form-control">
+          <button class="btn btn-primary" (click)="searchStudent()">
+            <span class="material-icons">search</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Add Student -->
+      <div class="glass-panel form-panel">
+        <h3 class="panel-title">Agregar Estudiante</h3>
+        <form (ngSubmit)="addStudent()" class="student-form">
+          <div class="form-group">
+            <label class="form-label">Carnet (ID Único)</label>
+            <input type="text" [(ngModel)]="studentForm.carnet" name="carnet" required class="form-control" placeholder="Ej: 2023001">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nombre</label>
+            <input type="text" [(ngModel)]="studentForm.nombre" name="nombre" required class="form-control">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Apellido</label>
+            <input type="text" [(ngModel)]="studentForm.apellido" name="apellido" required class="form-control">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Correo Electrónico</label>
+            <input type="email" [(ngModel)]="studentForm.correo" name="correo" class="form-control">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Carrera</label>
+            <input type="text" [(ngModel)]="studentForm.carrera" name="carrera" class="form-control" placeholder="Ingeniería en Sistemas">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Semestre Actual</label>
+            <input type="number" [(ngModel)]="studentForm.semestreActual" name="semestreActual" min="1" class="form-control">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Método de Inserción</label>
+            <select [(ngModel)]="studentForm.position" name="position" class="form-control">
+              <option value="end">Insertar al Final</option>
+              <option value="start">Insertar al Inicio</option>
+              <option value="index">Insertar en posición específica (Índice)</option>
+            </select>
+          </div>
+          <div class="form-group" *ngIf="studentForm.position === 'index'">
+            <label class="form-label">Índice (0-based)</label>
+            <input type="number" [(ngModel)]="studentForm.index" name="index" min="0" [max]="students.length" class="form-control">
+          </div>
+          <button type="submit" class="btn btn-primary w-full">Registrar Estudiante</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Right Panel: Visualizations -->
+    <div class="right-panel">
+      <!-- Students Linked List Visualizer -->
+      <div class="glass-panel visualizer-panel">
+        <h3 class="panel-title">Lista Enlazada Simple: Estudiantes (Total: {{students.length}})</h3>
+        <div class="list-visualizer-container">
+          <div class="linked-list-nodes">
+            <div *ngFor="let s of students; let i = index" class="node-wrapper animate-fade-in">
+              <div [class.selected]="selectedStudent?.carnet === s.carnet" class="node-card" (click)="selectStudent(s)">
+                <span class="node-index">#{{i}}</span>
+                <h4 class="node-name">{{s.nombre}} {{s.apellido}}</h4>
+                <p class="node-meta">Carnet: {{s.carnet}}</p>
+                <p class="node-submeta">{{s.carrera}}</p>
+                <button class="node-delete-btn" (click)="deleteStudent(s.carnet); $event.stopPropagation()">
+                  <span class="material-icons">delete</span>
+                </button>
+              </div>
+              <div *ngIf="i < students.length - 1" class="node-arrow">
+                <span class="material-icons">arrow_forward</span>
+              </div>
+            </div>
+            <div class="node-wrapper null-node" *ngIf="students.length > 0">
+              <div class="node-card null-card">
+                <h4>NULL</h4>
+              </div>
+            </div>
+            <div *ngIf="students.length === 0" class="empty-list">
+              <span class="material-icons empty-icon">group</span>
+              <p>No hay estudiantes registrados. Usa el formulario para agregar.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Doubly Linked List (Enrollment History) -->
+      <div class="glass-panel visualizer-panel" *ngIf="selectedStudent">
+        <div class="history-header">
+          <h3 class="panel-title">Historial de {{selectedStudent.nombre}} {{selectedStudent.apellido}} (Lista Doblemente Enlazada)</h3>
+          <div class="history-actions">
+            <button class="btn btn-secondary btn-sm" (click)="toggleHistoryOrder()">
+              Orden: {{historyOrder === 'chrono' ? 'Cronológico' : 'Inverso'}}
+            </button>
+            <button class="btn btn-secondary btn-sm" (click)="sortHistory('semestre', true)">Ordenar Semestre</button>
+            <button class="btn btn-secondary btn-sm" (click)="sortHistory('nota', false)">Ordenar Nota (Desc)</button>
+          </div>
+        </div>
+
+        <!-- Double Arrow Nodes Visual Representation -->
+        <div class="dll-visualizer-container">
+          <div class="dll-nodes">
+            <div class="node-wrapper null-node" *ngIf="history.length > 0">
+              <div class="node-card null-card">
+                <h4>NULL</h4>
+              </div>
+              <div class="node-arrow-bidirectional">
+                <span class="material-icons">swap_horiz</span>
+              </div>
+            </div>
+
+            <div *ngFor="let h of history; let idx = index" class="node-wrapper animate-fade-in">
+              <div [class.nav-active]="currentHistoryIndex === idx" class="node-card dll-card" (click)="currentHistoryIndex = idx">
+                <h4 class="node-name">{{h.curso}}</h4>
+                <p class="node-meta">Semestre: {{h.semestre}}</p>
+                <div class="grade-badge" [class.passed]="h.nota >= 61">{{h.nota}} pts</div>
+                <button class="node-delete-btn" (click)="deleteEnrollment(h.curso); $event.stopPropagation()">
+                  <span class="material-icons">delete</span>
+                </button>
+              </div>
+              <div class="node-arrow-bidirectional" *ngIf="idx < history.length - 1">
+                <span class="material-icons">swap_horiz</span>
+              </div>
+            </div>
+
+            <div class="node-wrapper null-node" *ngIf="history.length > 0">
+              <div class="node-arrow-bidirectional">
+                <span class="material-icons">swap_horiz</span>
+              </div>
+              <div class="node-card null-card">
+                <h4>NULL</h4>
+              </div>
+            </div>
+
+            <div *ngIf="history.length === 0" class="empty-list">
+              <span class="material-icons empty-icon">assignment</span>
+              <p>Este estudiante no tiene cursos inscritos.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- DLL Interactive Navigation Panel -->
+        <div class="dll-navigator-card" *ngIf="history.length > 0 && currentHistoryIndex !== -1">
+          <button class="nav-btn" [disabled]="currentHistoryIndex === 0" (click)="prevEnrollment()">
+            <span class="material-icons">navigate_before</span> Anterior
+          </button>
+          <div class="nav-current-info animate-fade-in" *ngIf="history[currentHistoryIndex]">
+            <span class="nav-position-tag">Nodo {{currentHistoryIndex + 1}} de {{history.length}}</span>
+            <h4>Curso: {{history[currentHistoryIndex].curso}}</h4>
+            <p>Semestre: {{history[currentHistoryIndex].semestre}}</p>
+            <p>Calificación: <strong>{{history[currentHistoryIndex].nota}} / 100</strong></p>
+          </div>
+          <button class="nav-btn" [disabled]="currentHistoryIndex === history.length - 1" (click)="nextEnrollment()">
+            Siguiente <span class="material-icons">navigate_next</span>
+          </button>
+        </div>
+
+        <!-- Add Enrollment Form -->
+        <div class="add-enrollment-box">
+          <h4>Inscribir Curso</h4>
+          <form (ngSubmit)="addEnrollment()" class="enrollment-form">
+            <div class="form-row">
+              <div class="form-group flex-1">
+                <label class="form-label">Código Curso</label>
+                <input type="text" [(ngModel)]="enrollmentForm.curso" name="curso" required class="form-control" placeholder="Ej: CB101">
+              </div>
+              <div class="form-group flex-1">
+                <label class="form-label">Semestre</label>
+                <input type="number" [(ngModel)]="enrollmentForm.semestre" name="semestre" min="1" required class="form-control">
+              </div>
+              <div class="form-group flex-1">
+                <label class="form-label">Nota</label>
+                <input type="number" [(ngModel)]="enrollmentForm.nota" name="nota" min="0" max="100" class="form-control">
+              </div>
+              <div class="form-group flex-1">
+                <label class="form-label">Posición</label>
+                <select [(ngModel)]="enrollmentForm.position" name="position" class="form-control">
+                  <option value="end">Al Final</option>
+                  <option value="start">Al Inicio</option>
+                </select>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Registrar Inscripción</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,29 @@
+[
+  {
+    "carnet": "2023001",
+    "nombre": "Juan",
+    "apellido": "Pérez",
+    "correo": "juan.perez@ur.edu.gt",
+    "fechaNacimiento": "2002-04-12",
+    "carrera": "Ingeniería en Sistemas",
+    "semestreActual": 3
+  },
+  {
+    "carnet": "2023002",
+    "nombre": "María",
+    "apellido": "Gómez",
+    "correo": "maria.gomez@ur.edu.gt",
+    "fechaNacimiento": "2001-08-22",
+    "carrera": "Ingeniería en Sistemas",
+    "semestreActual": 3
+  },
+  {
+    "carnet": "2023003",
+    "nombre": "Carlos",
+    "apellido": "Rodríguez",
+    "correo": "carlos.rod@ur.edu.gt",
+    "fechaNacimiento": "2003-01-05",
+    "carrera": "Ingeniería en Sistemas",
+    "semestreActual": 1
+  }
+]

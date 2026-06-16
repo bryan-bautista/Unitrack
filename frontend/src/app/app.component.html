@@ -1,0 +1,41 @@
+<div class="app-layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="brand-header">
+      <span class="material-icons brand-icon">hub</span>
+      <div class="brand-details">
+        <h1 class="brand-name">UniTrack</h1>
+        <span class="brand-subtitle">Gestión Estructurada</span>
+      </div>
+    </div>
+    
+    <nav class="nav-menu">
+      <a routerLink="/estudiantes" routerLinkActive="active" class="nav-item">
+        <span class="material-icons">people</span>
+        <span>Estudiantes</span>
+      </a>
+      <a routerLink="/cursos" routerLinkActive="active" class="nav-item">
+        <span class="material-icons">account_tree</span>
+        <span>Cursos</span>
+      </a>
+      <a routerLink="/catedraticos" routerLinkActive="active" class="nav-item">
+        <span class="material-icons">grid_on</span>
+        <span>Catedráticos</span>
+      </a>
+      <a routerLink="/pensum" routerLinkActive="active" class="nav-item">
+        <span class="material-icons">insights</span>
+        <span>Pensum</span>
+      </a>
+    </nav>
+    
+    <div class="sidebar-footer">
+      <p>© 2026 Universidad Regional</p>
+      <span>Estructura de Datos</span>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="content-area">
+    <router-outlet></router-outlet>
+  </main>
+</div>

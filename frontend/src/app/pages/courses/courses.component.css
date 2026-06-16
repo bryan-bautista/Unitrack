@@ -1,0 +1,160 @@
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.mode-highlight {
+  color: var(--accent-blue);
+  text-shadow: 0 0 10px rgba(0, 210, 255, 0.3);
+}
+
+.left-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.right-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.panel-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: var(--text-primary);
+  border-left: 4px solid var(--accent-blue);
+  padding-left: 10px;
+}
+
+/* Tree Stats */
+.stats-box {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-light);
+  padding-bottom: 8px;
+}
+
+.stat-label {
+  color: var(--text-secondary);
+}
+
+.stat-value {
+  font-weight: 600;
+  color: var(--accent-blue);
+}
+
+/* SVG Rendering */
+.svg-container {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  overflow: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.tree-svg {
+  background-color: transparent;
+}
+
+.tree-link {
+  stroke: var(--border-light);
+  stroke-width: 2px;
+  stroke-dasharray: 4, 4;
+}
+
+.tree-node-circle {
+  fill: var(--bg-tertiary);
+  stroke: var(--accent-blue);
+  stroke-width: 2.5px;
+  transition: var(--transition-smooth);
+}
+
+.svg-node-group:hover .tree-node-circle {
+  fill: rgba(0, 210, 255, 0.1);
+  stroke-width: 3.5px;
+  cursor: pointer;
+}
+
+.tree-node-text {
+  fill: var(--text-primary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-anchor: middle;
+  pointer-events: none;
+}
+
+/* Balance Factor Tag */
+.bf-bg {
+  fill: var(--accent-green);
+}
+.bf-bg.unbalanced {
+  fill: var(--accent-red);
+}
+
+.bf-text {
+  fill: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-anchor: middle;
+}
+
+/* Traversals */
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.traversal-select {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.inline-select {
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  margin-bottom: 0;
+  width: auto;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.node-delete-btn-table {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.node-delete-btn-table:hover {
+  color: var(--accent-red);
+}
+
+.w-full {
+  width: 100%;
+}

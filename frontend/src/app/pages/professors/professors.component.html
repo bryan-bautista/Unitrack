@@ -1,0 +1,160 @@
+<div class="animate-fade-in">
+  <div class="header-container">
+    <div>
+      <h2 class="header-title">Directorio de Catedráticos</h2>
+      <p class="header-desc">Administración rápida en promedio O(1) utilizando Tablas Hash implementadas manualmente con rehashing dinámico.</p>
+    </div>
+  </div>
+
+  <div class="dashboard-grid">
+    <!-- Configuration and Add Form -->
+    <div class="left-panel">
+      <!-- HashTable config -->
+      <div class="glass-panel">
+        <h3 class="panel-title">Configuración de la Tabla</h3>
+        <form (ngSubmit)="updateConfig()" class="config-form">
+          <div class="form-group">
+            <label class="form-label">Función Hash</label>
+            <select [(ngModel)]="hashConfig.hashFunction" name="hashFunction" class="form-control">
+              <option value="division">Método por División</option>
+              <option value="djb2">Algoritmo djb2 (Polinomial-like)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Resolución de Colisiones</label>
+            <select [(ngModel)]="hashConfig.collisionMethod" name="collisionMethod" class="form-control">
+              <option value="chaining">Encadenamiento (Chaining)</option>
+              <option value="linear">Direccionamiento Abierto: Linear Probing</option>
+              <option value="quadratic">Direccionamiento Abierto: Quadratic Probing</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-secondary w-full">Re-estructurar Tabla</button>
+        </form>
+      </div>
+
+      <!-- Add Professor -->
+      <div class="glass-panel">
+        <h3 class="panel-title">Agregar Catedrático</h3>
+        <form (ngSubmit)="addProfessor()" class="professor-form">
+          <div class="form-group">
+            <label class="form-label">Código de Empleado (ID Único)</label>
+            <input type="text" [(ngModel)]="professorForm.codigo" name="codigo" required class="form-control" placeholder="Ej: L001">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nombre</label>
+            <input type="text" [(ngModel)]="professorForm.nombre" name="nombre" required class="form-control">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Apellido</label>
+            <input type="text" [(ngModel)]="professorForm.apellido" name="apellido" required class="form-control">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Especialidad</label>
+            <input type="text" [(ngModel)]="professorForm.especialidad" name="especialidad" class="form-control" placeholder="Matemáticas, Algoritmos...">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Correo</label>
+            <input type="email" [(ngModel)]="professorForm.correo" name="correo" class="form-control">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Cursos Asignados (Separados por coma)</label>
+            <input type="text" [(ngModel)]="professorForm.cursosAsignadosInput" name="cursosAsignadosInput" class="form-control" placeholder="CB101, CB102">
+          </div>
+          <button type="submit" class="btn btn-primary w-full">Registrar Catedrático</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Stats & Bucket Visualization -->
+    <div class="right-panel">
+      <!-- Live Stats -->
+      <div class="glass-panel stats-panel" *ngIf="hashStats">
+        <h3 class="panel-title">Estadísticas en Tiempo Real</h3>
+        <div class="hash-stats-grid">
+          <div class="stat-card">
+            <span class="stat-lbl">Factor de Carga</span>
+            <div class="stat-val" [class.danger]="hashStats.loadFactor >= 0.75">{{hashStats.loadFactor}} / 0.75</div>
+            <span class="stat-sub">Rehashing automático si LF >= 0.75</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-lbl">Colisiones Registradas</span>
+            <div class="stat-val color-orange">{{hashStats.collisionCount}}</div>
+            <span class="stat-sub">Total de impactos resueltos</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-lbl">Capacidad de Buckets</span>
+            <div class="stat-val color-blue">{{hashStats.size}} / {{hashStats.capacity}}</div>
+            <span class="stat-sub">Elementos / Tamaño actual de tabla</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bucket Structure Visualizer -->
+      <div class="glass-panel visualizer-panel">
+        <h3 class="panel-title">Distribución de Celdas (Buckets)</h3>
+        
+        <!-- Chaining mode visualization -->
+        <div class="buckets-chain-view" *ngIf="hashConfig.collisionMethod === 'chaining'">
+          <div *ngFor="let bucket of buckets; let i = index" class="bucket-row animate-fade-in">
+            <div class="bucket-index" [class.has-items]="bucket && bucket.length > 0">
+              Bucket {{i}}
+            </div>
+            
+            <div class="bucket-nodes-chain">
+              <ng-container *ngIf="bucket && bucket.length > 0; else emptyChain">
+                <div *ngFor="let entry of bucket; let j = index" class="chain-node animate-fade-in">
+                  <div class="node-info">
+                    <strong>{{entry.key}}</strong>: {{entry.val.nombre}} {{entry.val.apellido}}
+                    <span class="specialty-tag">{{entry.val.especialidad}}</span>
+                  </div>
+                  <div class="chain-arrow" *ngIf="j < bucket.length - 1">
+                    <span class="material-icons">link</span>
+                  </div>
+                </div>
+                <!-- End of chain link -->
+                <div class="chain-arrow"><span class="material-icons">link</span></div>
+                <div class="chain-node null-node">NULL</div>
+              </ng-container>
+              <ng-template #emptyChain>
+                <span class="empty-tag">Vacío (NULL)</span>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+
+        <!-- Open addressing visualization (Linear/Quadratic Probing) -->
+        <div class="probing-grid-view" *ngIf="hashConfig.collisionMethod !== 'chaining'">
+          <div class="probing-legend">
+            <span class="legend-item"><span class="legend-color occupied"></span> Ocupado</span>
+            <span class="legend-item"><span class="legend-color empty"></span> Vacío</span>
+            <span class="legend-item"><span class="legend-color deleted"></span> Eliminado (Tombstone)</span>
+          </div>
+
+          <div class="cells-grid">
+            <div *ngFor="let bucket of buckets; let i = index" 
+                 class="grid-cell"
+                 [class.occupied]="bucket && !bucket.deleted"
+                 [class.deleted]="bucket && bucket.deleted"
+                 [class.empty]="!bucket">
+              <span class="cell-index">#{{i}}</span>
+              
+              <div class="cell-content" *ngIf="bucket && !bucket.deleted">
+                <strong>{{bucket.key}}</strong>
+                <p>{{bucket.val.nombre}}</p>
+                <button class="cell-delete-btn" (click)="deleteProfessor(bucket.key)">
+                  <span class="material-icons">delete</span>
+                </button>
+              </div>
+              <div class="cell-content text-center text-muted" *ngIf="bucket && bucket.deleted">
+                <strong>TOMBSTONE</strong>
+              </div>
+              <div class="cell-content text-center text-muted" *ngIf="!bucket">
+                <span>VACÍO</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

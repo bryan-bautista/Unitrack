@@ -1,0 +1,34 @@
+[
+  {
+    "codigo": "L001",
+    "nombre": "Ing. Marvin",
+    "apellido": "Morales",
+    "especialidad": "Matemáticas",
+    "correo": "marvin.morales@ur.edu.gt",
+    "cursosAsignados": [
+      "CB101",
+      "CB102"
+    ]
+  },
+  {
+    "codigo": "L002",
+    "nombre": "Ing. Alejandro",
+    "apellido": "Guzmán",
+    "especialidad": "Software",
+    "correo": "alejandro.guzman@ur.edu.gt",
+    "cursosAsignados": [
+      "SI301",
+      "SI302"
+    ]
+  },
+  {
+    "codigo": "L003",
+    "nombre": "Inga. Sandra",
+    "apellido": "López",
+    "especialidad": "Bases de Datos",
+    "correo": "sandra.lopez@ur.edu.gt",
+    "cursosAsignados": [
+      "SI401"
+    ]
+  }
+]

@@ -1,0 +1,47 @@
+{
+  "vertices": [
+    {
+      "codigo": "CB101",
+      "nombre": "Matemática Computacional 1",
+      "creditos": 5
+    },
+    {
+      "codigo": "CB102",
+      "nombre": "Matemática Computacional 2",
+      "creditos": 5
+    },
+    {
+      "codigo": "SI301",
+      "nombre": "Estructuras de Datos",
+      "creditos": 6
+    },
+    {
+      "codigo": "SI302",
+      "nombre": "Análisis y Diseño de Sistemas 1",
+      "creditos": 5
+    },
+    {
+      "codigo": "SI401",
+      "nombre": "Bases de Datos 1",
+      "creditos": 5
+    }
+  ],
+  "edges": [
+    {
+      "from": "CB101",
+      "to": "CB102"
+    },
+    {
+      "from": "CB102",
+      "to": "SI301"
+    },
+    {
+      "from": "SI301",
+      "to": "SI401"
+    },
+    {
+      "from": "SI301",
+      "to": "SI302"
+    }
+  ]
+}

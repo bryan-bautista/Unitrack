@@ -1,0 +1,131 @@
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--bg-primary);
+}
+
+/* Sidebar Styling */
+.sidebar {
+  width: 280px;
+  background-color: var(--bg-secondary);
+  border-right: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  padding: 30px 20px;
+  position: fixed;
+  height: 100vh;
+  z-index: 100;
+}
+
+.brand-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 40px;
+  padding: 0 10px;
+}
+
+.brand-icon {
+  font-size: 2.5rem;
+  color: var(--accent-blue);
+  text-shadow: 0 0 15px rgba(0, 210, 255, 0.4);
+}
+
+.brand-name {
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  background: linear-gradient(135deg, #fff 0%, var(--accent-blue) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.brand-subtitle {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.nav-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex-grow: 1;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 14px 18px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-weight: 500;
+  border-radius: 12px;
+  transition: var(--transition-smooth);
+}
+
+.nav-item span.material-icons {
+  font-size: 1.4rem;
+  transition: var(--transition-smooth);
+}
+
+.nav-item:hover {
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-primary);
+}
+
+.nav-item.active {
+  background: linear-gradient(135deg, rgba(0, 210, 255, 0.1) 0%, rgba(0, 102, 255, 0.05) 100%);
+  color: var(--accent-blue);
+  border-left: 4px solid var(--accent-blue);
+  box-shadow: 0 0 15px rgba(0, 210, 255, 0.05);
+}
+
+.nav-item.active span.material-icons {
+  color: var(--accent-blue);
+}
+
+.sidebar-footer {
+  padding: 10px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border-light);
+  margin-top: 20px;
+}
+
+.sidebar-footer p {
+  margin-bottom: 2px;
+}
+
+/* Content Area */
+.content-area {
+  margin-left: 280px;
+  flex-grow: 1;
+  padding: 40px;
+  min-height: 100vh;
+  overflow-y: auto;
+  background-color: var(--bg-primary);
+}
+
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 80px;
+    padding: 20px 10px;
+  }
+  .brand-details, .sidebar-footer, .nav-item span:not(.material-icons) {
+    display: none;
+  }
+  .brand-header {
+    justify-content: center;
+    margin-bottom: 30px;
+  }
+  .nav-item {
+    justify-content: center;
+    padding: 14px 0;
+  }
+  .content-area {
+    margin-left: 80px;
+  }
+}

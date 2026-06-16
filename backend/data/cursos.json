@@ -1,0 +1,42 @@
+[
+  {
+    "codigo": "CB101",
+    "nombre": "Matemática Computacional 1",
+    "creditos": 5,
+    "catedraticoAsignado": "L001",
+    "horario": "07:00-09:00",
+    "cupoMaximo": 35
+  },
+  {
+    "codigo": "CB102",
+    "nombre": "Matemática Computacional 2",
+    "creditos": 5,
+    "catedraticoAsignado": "L001",
+    "horario": "09:00-11:00",
+    "cupoMaximo": 35
+  },
+  {
+    "codigo": "SI301",
+    "nombre": "Estructuras de Datos",
+    "creditos": 6,
+    "catedraticoAsignado": "L002",
+    "horario": "11:00-13:00",
+    "cupoMaximo": 30
+  },
+  {
+    "codigo": "SI302",
+    "nombre": "Análisis y Diseño de Sistemas 1",
+    "creditos": 5,
+    "catedraticoAsignado": "L002",
+    "horario": "13:00-15:00",
+    "cupoMaximo": 30
+  },
+  {
+    "codigo": "SI401",
+    "nombre": "Bases de Datos 1",
+    "creditos": 5,
+    "catedraticoAsignado": "L003",
+    "horario": "15:00-17:00",
+    "cupoMaximo": 30
+  }
+]

@@ -1,0 +1,316 @@
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.left-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.right-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.panel-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: var(--text-primary);
+  border-left: 4px solid var(--accent-blue);
+  padding-left: 10px;
+}
+
+.search-box {
+  display: flex;
+  gap: 10px;
+}
+
+.search-box input {
+  flex-grow: 1;
+}
+
+/* Linked List Node Visualizer */
+.list-visualizer-container {
+  overflow-x: auto;
+  padding: 20px 10px;
+}
+
+.linked-list-nodes {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  min-height: 120px;
+}
+
+.node-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.node-card {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 16px 20px;
+  min-width: 180px;
+  position: relative;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.node-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent-blue);
+}
+
+.node-card.selected {
+  border-color: var(--accent-blue);
+  background: rgba(0, 210, 255, 0.05);
+  box-shadow: 0 0 15px rgba(0, 210, 255, 0.1);
+}
+
+.node-index {
+  position: absolute;
+  top: -10px;
+  left: 10px;
+  background: var(--accent-blue);
+  color: var(--bg-primary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.node-name {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.node-meta {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.node-submeta {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.node-delete-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  opacity: 0;
+  transition: var(--transition-smooth);
+}
+
+.node-card:hover .node-delete-btn {
+  opacity: 1;
+}
+
+.node-delete-btn:hover {
+  color: var(--accent-red);
+}
+
+.node-arrow {
+  color: var(--accent-blue);
+  display: flex;
+  align-items: center;
+}
+
+/* Null node card */
+.null-card {
+  background: rgba(255, 255, 255, 0.03);
+  border-style: dashed;
+  min-width: 100px;
+  text-align: center;
+  cursor: default;
+}
+.null-card h4 {
+  color: var(--text-muted);
+}
+
+.empty-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  color: var(--text-muted);
+  padding: 40px 0;
+  gap: 12px;
+}
+
+.empty-icon {
+  font-size: 3rem;
+  color: var(--border-light);
+}
+
+/* Doubly Linked List */
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.history-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 0.8rem;
+}
+
+.dll-visualizer-container {
+  overflow-x: auto;
+  padding: 20px 10px;
+  border-bottom: 1px solid var(--border-light);
+  margin-bottom: 24px;
+}
+
+.dll-nodes {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 120px;
+}
+
+.node-arrow-bidirectional {
+  color: var(--accent-purple);
+  display: flex;
+  align-items: center;
+  padding: 0 5px;
+}
+
+.dll-card {
+  border-color: rgba(157, 78, 221, 0.3);
+}
+
+.dll-card:hover {
+  border-color: var(--accent-purple);
+}
+
+.dll-card.nav-active {
+  border-color: var(--accent-purple);
+  background: rgba(157, 78, 221, 0.08);
+  box-shadow: 0 0 15px rgba(157, 78, 221, 0.15);
+}
+
+.grade-badge {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: rgba(255, 51, 102, 0.15);
+  color: var(--accent-red);
+}
+
+.grade-badge.passed {
+  background: rgba(56, 176, 0, 0.15);
+  color: var(--accent-green);
+}
+
+/* DLL Interactive Navigation Box */
+.dll-navigator-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 20px 30px;
+  margin-bottom: 24px;
+}
+
+.nav-btn {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-light);
+  color: var(--text-primary);
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: var(--transition-smooth);
+}
+
+.nav-btn:hover:not(:disabled) {
+  border-color: var(--accent-purple);
+  color: var(--accent-purple);
+}
+
+.nav-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.nav-current-info {
+  text-align: center;
+}
+
+.nav-position-tag {
+  font-size: 0.75rem;
+  background: var(--accent-purple);
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.nav-current-info h4 {
+  font-size: 1.2rem;
+  margin-top: 8px;
+  margin-bottom: 4px;
+}
+
+.nav-current-info p {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+/* Forms Add enrollment */
+.add-enrollment-box {
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px dashed var(--border-light);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.add-enrollment-box h4 {
+  margin-bottom: 15px;
+}
+
+.form-row {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+
+.flex-1 {
+  flex: 1;
+  min-width: 150px;
+}
+
+.w-full {
+  width: 100%;
+}
